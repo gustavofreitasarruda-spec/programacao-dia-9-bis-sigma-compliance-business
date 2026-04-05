@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>Dia 9: Compliance Business x BiS SiGMA</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dia 9: Programação Compliance Business x BiS SiGMA</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f5f3;
+    color: #1a1a1a;
+    padding: 1.5rem;
+  }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 16px; }
+
+  .wrap { overflow-x: auto; }
+  .inner { min-width: 700px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: 11px; }
+  .leg-item { display: flex; align-items: center; gap: 4px; color: #555; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  .stage-headers {
+    display: grid;
+    grid-template-columns: 48px repeat(6, 1fr);
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+  .stage-header {
+    padding: 6px 5px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .s0 { background:#B5D4F4; color:#042C53; }
+  .s1 { background:#85B7EB; color:#042C53; }
+  .s2 { background:#378ADD; color:#E6F1FB; }
+  .s3 { background:#CECBF6; color:#26215C; }
+  .s4 { background:#C0DD97; color:#173404; }
+  .s5 { background:#FAC775; color:#412402; }
+
+  .timeline-outer {
+    display: grid;
+    grid-template-columns: 48px repeat(6, 1fr);
+    gap: 5px;
+    position: relative;
+  }
+
+  .time-axis { position: relative; }
+  .tick {
+    position: absolute;
+    right: 0;
+    font-size: 10px;
+    font-weight: 500;
+    color: #888;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    padding-right: 4px;
+  }
+
+  .stage-col { position: relative; }
+
+  .card {
+    position: absolute;
+    left: 0; right: 0;
+    border-radius: 6px;
+    padding: 5px 7px;
+    font-size: 11px;
+    line-height: 1.35;
+    cursor: pointer;
+    border: 0.5px solid transparent;
+    overflow: hidden;
+    transition: opacity 0.15s, box-shadow 0.15s;
+  }
+  .card:hover { opacity: 0.85; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .card .c-time { font-size: 9px; font-weight: 600; opacity: 0.7; margin-bottom: 2px; }
+  .card .c-title { font-weight: 600; }
+  .card .c-spk { font-size: 10px; opacity: 0.65; margin-top: 2px; }
+
+  .c0 { background:#B5D4F4; color:#042C53; border-color:#85B7EB; }
+  .c1 { background:#85B7EB; color:#042C53; border-color:#378ADD; }
+  .c2 { background:#378ADD; color:#E6F1FB; border-color:#185FA5; }
+  .c3 { background:#CECBF6; color:#26215C; border-color:#AFA9EC; }
+  .c4 { background:#C0DD97; color:#173404; border-color:#97C459; }
+  .c5 { background:#FAC775; color:#412402; border-color:#EF9F27; }
+
+  .lunch-bar {
+    position: absolute;
+    left: 0; right: 0;
+    background: #e8e8e4;
+    border: 0.5px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: #666;
+  }
+
+  /* Modal */
+  .modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 100;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-bg.open { display: flex; }
+  .modal {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px; padding: 1.25rem;
+    max-width: 420px; width: 100%; max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+  .modal h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: #1a1a1a; }
+  .modal .m-stage { font-size: 11px; color: #888; margin-bottom: 8px; }
+  .modal .m-time { font-size: 12px; font-weight: 600; color: #555; margin-bottom: 8px; }
+  .modal .m-desc { font-size: 13px; color: #555; line-height: 1.6; margin-bottom: 10px; }
+  .modal .m-spk { font-size: 12px; color: #555; }
+  .modal .m-spk strong { color: #1a1a1a; font-weight: 600; }
+  .modal-close {
+    display: block; margin-top: 14px; width: 100%; padding: 8px;
+    background: transparent; border: 1px solid #ccc;
+    border-radius: 8px; cursor: pointer; font-size: 13px; color: #333;
+  }
+  .modal-close:hover { background: #f5f5f3; }
+
+  /* ── Card em destaque: Modelo Loteria Federal — Caixa ── */
+  @keyframes pulse-border {
+    0%, 100% { box-shadow: 0 0 0 2px #E8A000, 0 4px 16px rgba(232,160,0,0.35); }
+    50%       { box-shadow: 0 0 0 4px #E8A000, 0 6px 24px rgba(232,160,0,0.55); }
+  }
+  .card-featured {
+    border: 2px solid #E8A000 !important;
+    border-radius: 8px !important;
+    animation: pulse-border 2.2s ease-in-out infinite;
+    z-index: 10;
+  }
+  .card-featured .c-time  { font-weight: 700 !important; }
+  .card-featured .c-title { font-size: 12px !important; }
+  .badge-featured {
+    display: inline-block;
+    background: #E8A000;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-bottom: 3px;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<h1>Dia 9: Programação Compliance Business x BiS SiGMA</h1>
+<p class="subtitle">Grade de palestras simultâneas · Clique em cada card para ver detalhes</p>
+
+<div class="wrap"><div class="inner">
+
+<div class="stage-headers">
+  <div></div>
+  <div class="stage-header s0">Compliance Business<br>Palco Principal</div>
+  <div class="stage-header s1">Compliance Business<br>Palco 1</div>
+  <div class="stage-header s2">Compliance Business<br>Palco 2</div>
+  <div class="stage-header s3">BiS SiGMA<br>Itaim Stage</div>
+  <div class="stage-header s4">BiS SiGMA<br>Jardins Stage</div>
+  <div class="stage-header s5">BiS SiGMA<br>Paulista Stage</div>
+</div>
+
+<div class="timeline-outer" id="tl"></div>
+
+</div></div>
+
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div id="modal-inner"></div>
+    <button class="modal-close" onclick="closeModal()">Fechar</button>
+  </div>
+</div>
+
+<script>
+const stageNames = [
+  'Compliance — Palco Principal','Compliance — Palco 1','Compliance — Palco 2',
+  'Itaim Stage','Jardins Stage','Paulista Stage'
+];
+
+function hm(h,m){return h*60+(m||0);}
+function fmt(t){const h=Math.floor(t/60),m=t%60;return h+'h'+(m?String(m).padStart(2,'0'):'');}
+
+const DAY_START = hm(9);
+const DAY_END   = hm(17,5);
+const LUNCH_S   = hm(12,30);
+const LUNCH_E   = hm(14);
+const PX        = 2.6;
+
+const totalPx = (DAY_END - DAY_START) * PX;
+function toY(t){ return (t - DAY_START) * PX; }
+
+const sessions = [
+  {stage:0,start:hm(9),    end:hm(9,30),  title:"Boas-vindas",                     desc:"Abertura do evento.",                                              speakers:"Kelly Gallego Massaro"},
+  {stage:0,start:hm(9,30), end:hm(10),    title:"Palavras iniciais",                desc:"Discurso de abertura do evento.",                                  speakers:""},
+  {stage:0,start:hm(10),   end:hm(10,30), title:"Cenário do câmbio no Brasil",      desc:"Os efeitos dos 100 dias da autorização.",                          speakers:""},
+  {stage:0,start:hm(10,30),end:hm(11),    title:"Combate aos crimes financeiros",   desc:"Persecução Patrimonial em Ativos Virtuais.",                       speakers:""},
+  {stage:0,start:hm(11),   end:hm(11,30), title:"O papel do Coaf",                  desc:"O papel do Coaf no combate ao crime organizado.",                  speakers:"Ricardo Saadi (COAF)"},
+  {stage:0,start:hm(11,30),end:hm(12),    title:"Mercado regulado",                 desc:"O desenvolvimento de um mercado regulado.",                        speakers:""},
+  {stage:0,start:hm(12),   end:hm(12,30), title:"Programa de Leniência Antitruste", desc:"Como funciona o Programa de Leniência Antitruste.",               speakers:""},
+  {stage:1,start:hm(14),   end:hm(15,30), title:"Stablecoins, tokenização e travel rule",             desc:"Discussão sobre stablecoins, tokenização, pagamentos e travel rule no mercado regulado.", speakers:"Marcela Pinori (Visa) | Nicolas Alonso (Bitso) | Mathias Fisher (Nomad) | Lia Susin (Nium)"},
+  {stage:1,start:hm(15,30),end:hm(16,30), title:"Inteligência de dados nos controles institucionais", desc:"Aprimoramento dos controles institucionais através de inteligência de dados.",            speakers:"Natalia Grigolin (EY) | José Luiz Rodrigues (ABFintechs) | Rudyero Trento Alves (MJ) | Luiz Paulo Bittencourt (BB) | José Gomes (Bradesco)"},
+  {stage:1,start:hm(16,30),end:hm(17),    title:"PLD/FTP: Selo de Conformidade",                      desc:"A articulação público-privado para PLD/FTP e o Selo de Conformidade.",                    speakers:""},
+  {stage:2,start:hm(14),   end:hm(15,30), title:"Melhores práticas internacionais de Compliance",     desc:"Compliance em foco: melhores práticas internacionais para o mercado financeiro.",          speakers:"Gerson Romantini (Bacen) | Alessandra Raspanti (CAMS) | Marcos Cavagnoli (Bradesco)"},
+  {stage:2,start:hm(15,30),end:hm(16,30), title:"Inovação, regulação e tributação no câmbio",         desc:"Expectativas para o câmbio: inovação, regulação e tributação.",                           speakers:""},
+  {stage:2,start:hm(16,30),end:hm(17),    title:"Res. 14: Requerimento de Capital",                   desc:"Desafios e oportunidades no segmento de distribuidoras e corretoras de câmbio.",          speakers:"Edson Oliveira (OMB Advogados) | Johnny Kneese (LEVYCAM) | Airton Junior (Broker Brasil) | Rodrigo Xavier (OZ)"},
+  {stage:3,start:hm(11),   end:hm(11,50), title:"Modelo Loteria Federal — Caixa",          desc:"A Caixa Econômica Federal como mecanismo de redistribuição e financiamento.", speakers:"Renato Siqueira – CEO, CAIXA Lotteries"},
+  {stage:3,start:hm(11,55),end:hm(12,15), title:"Loterias no Brasil: 26 estados e DF",     desc:"Análise das oportunidades geradas pelas loterias nos 26 estados e no DF.",   speakers:"Roberto Brasil Fernandes | Daniel Fernandes"},
+  {stage:3,start:hm(12,20),end:hm(13,5),  title:"Loterias estaduais: modelos e concessões",desc:"Equilíbrio entre autonomia federativa, segurança jurídica e capacidade fiscalizadora.", speakers:"Onésimo Diniz | Francisco Petrônio | Fabíola Esteves | Daniel Romanowski | Jane Carmen"},
+  {stage:3,start:hm(13,10),end:hm(13,55), title:"Operador em Loterias Estaduais",          desc:"Modelos de negócio, compliance e eficiência operacional.",                   speakers:"Marcello Corrêa | Joberto Porto | Eduardo Paiva"},
+  {stage:3,start:hm(14),   end:hm(14,45), title:"VLTs: segurança e rastreabilidade",       desc:"Video Lottery Terminals em bares e restaurantes como segmento legal e regulado.", speakers:"Edson Kikuchi | Hazenclever Lopes | Daniel Romanowski | Afonso Dias"},
+  {stage:3,start:hm(14,50),end:hm(15,35), title:"Mercado de loterias na América Latina",   desc:"Transformações regulatórias e modernização operacional na região.",           speakers:"Rodrigo Cigliutti (CIBELAE) | Mayra Gallucci (LOTBA)"},
+  {stage:3,start:hm(15,40),end:hm(16,15), title:"Varejo lotérico do futuro: omnichannel",  desc:"Integração de canais físicos e digitais, novos modelos de receita.",          speakers:"Ricardo Amado | Waldir Marques | Amilton Noble | Alessandro Montenegro | Marco Taurisano"},
+  {stage:3,start:hm(16,20),end:hm(17,5),  title:"Futuro das operações locais pós-STF",     desc:"A decisão do STF na ADPF 1212 e seus impactos nas operações locais.",        speakers:"Paulo Horn | Lucineia Souzza | Lilian Azevedo | Irapuã Santana"},
+  {stage:4,start:hm(11,5), end:hm(11,35), title:"SiGMA Foundation",                        desc:"Iniciativas de impacto social focadas em educação e esporte.",                speakers:""},
+  {stage:4,start:hm(11,40),end:hm(12,25), title:"Do Show do Milhão ao iGaming",            desc:"A trajetória do Grupo Silvio Santos no entretenimento e sua entrada no iGaming.", speakers:"Fernando Justus Fischer | Mariana Kannebley | Lindezo (SBT)"},
+  {stage:4,start:hm(12,30),end:hm(12,45), title:"Brazilian Lounge: mercado global",         desc:"Da construção de um mercado global a uma história que precisa ser contada.",  speakers:"Alessandro Valente – Co-Fundador, BiS"},
+  {stage:4,start:hm(12,50),end:hm(13,35), title:"Jovens líderes na economia digital",       desc:"Novos profissionais renovando estratégias e acelerando a inovação no setor.", speakers:"Bruno Palumbo | Beatriz Melges | Stefano Andrade | Karen Cohen"},
+  {stage:4,start:hm(13,40),end:hm(14,10), title:"Cassinos terrestres: lições internacionais",desc:"Lições internacionais sobre regulação, geração de receita e governança.",   speakers:"Bruno Omori | Miguel de Achával"},
+  {stage:4,start:hm(14,15),end:hm(15,30), title:"SiGMA Startup Pitch",                     desc:"Competição ao vivo para startups se conectarem com investidores e VCs.",      speakers:""},
+  {stage:4,start:hm(15,30),end:hm(16,15), title:"Copa do Mundo e Esports",                 desc:"Convergência entre Copa do Mundo FIFA e ecossistema de esports em apostas.",  speakers:"Juan Matias Méndez | Carlos Gama | Thaise Jupiter | Samuel Vilar | Leandro Valentim"},
+  {stage:4,start:hm(16,20),end:hm(17,5),  title:"IA na Copa: atletas, árbitros e torcedores",desc:"Uso de IA para análise em tempo real de atletas e auxílio a árbitros.",   speakers:"Rodrigo Cambiaghi – Sportradar LATAM"},
+  {stage:5,start:hm(11,5), end:hm(11,50), title:"Mercado de afiliados no Brasil",           desc:"Identidade do mercado de afiliados: paixão pelo esporte, PIX, ética e prevenção à fraude.", speakers:"Alessandro Gherardi | Bruno Barroso | Pedro Feitosa | Yudi Osugui"},
+  {stage:5,start:hm(11,55),end:hm(12,40), title:"Creator Marketing com performance",        desc:"Marketing de criadores orientado a performance, conversão e compliance.",    speakers:"Arthur Frasson | Rafael Menezes | Fabio Paz | Keith Geary"},
+  {stage:5,start:hm(12,45),end:hm(13,0),  title:"From Scroll to Deposit",                   desc:"Vídeos curtos com storytelling preciso que melhor convertem no iGaming.",   speakers:"Paula Kenan – Kwai for Business"},
+  {stage:5,start:hm(13,5), end:hm(13,35), title:"Ask CONAR",                                desc:"Fireside chat sobre regulamentação da comunicação comercial.",               speakers:"Leonardo Benites | Juliana Albuquerque – VP, CONAR"},
+  {stage:5,start:hm(13,40),end:hm(14,25), title:"Marketing responsável",                    desc:"Limites da comunicação comercial, riscos regulatórios e boas práticas em campanhas.", speakers:"Hebert Gaban | Jon Vlogs | Sébastien Risse | Andresa Franco | Hugo Melo"},
+  {stage:5,start:hm(14,30),end:hm(15,15), title:"Obrigações, riscos e boas práticas",       desc:"Responsabilidades de afiliados e operadores, prevenção de irregularidades.", speakers:"Rafael Martins | Eliane Nunes | Manuel Matos"},
+  {stage:5,start:hm(15,20),end:hm(16,5),  title:"CRM & Lifecycle: retenção e LTV",          desc:"Retenção, reativação e LTV como guias estratégicos para operadores e afiliados.", speakers:"Alessandro Lisboa | Thomas Carvalhaes | Paula Pereira | Álvaro Camargo"},
+  {stage:5,start:hm(16,10),end:hm(16,55), title:"Mídia paga em 2026",                       desc:"Tráfego pago com precisão em criativos, leitura de algoritmos e controle de margem.", speakers:"André Vinicius Alencar | Bruno Pereira"},
+];
+
+const tickTimes = [];
+for(let t = DAY_START; t <= DAY_END; t += 30) tickTimes.push(t);
+
+const tl = document.getElementById('tl');
+
+// Axis
+const axisCol = document.createElement('div');
+axisCol.className = 'time-axis';
+axisCol.style.cssText = `position:relative;height:${totalPx}px;`;
+tickTimes.forEach(t => {
+  const tick = document.createElement('div');
+  tick.className = 'tick';
+  tick.style.top = toY(t) + 'px';
+  tick.textContent = fmt(t);
+  axisCol.appendChild(tick);
+});
+tl.appendChild(axisCol);
+
+for(let st = 0; st < 6; st++){
+  const col = document.createElement('div');
+  col.className = 'stage-col';
+  col.style.cssText = `position:relative;height:${totalPx}px;`;
+
+  tickTimes.forEach(t => {
+    const line = document.createElement('div');
+    line.style.cssText = `position:absolute;left:0;right:0;top:${toY(t)}px;height:0.5px;background:#ddd;`;
+    col.appendChild(line);
+  });
+
+  const lunch = document.createElement('div');
+  lunch.className = 'lunch-bar';
+  lunch.style.top    = toY(LUNCH_S) + 'px';
+  lunch.style.height = ((LUNCH_E - LUNCH_S) * PX - 2) + 'px';
+  if(st === 0) lunch.textContent = 'Almoço — 12h30 às 14h';
+  col.appendChild(lunch);
+
+  sessions.filter(s => s.stage === st).forEach(s => {
+    const card = document.createElement('div');
+    const isFeatured = s.title === 'Modelo Loteria Federal — Caixa' || s.title === 'O papel do Coaf';
+    card.className = 'card c' + st + (isFeatured ? ' card-featured' : '');
+    card.style.top    = toY(s.start) + 'px';
+    card.style.height = ((s.end - s.start) * PX - 2) + 'px';
+    const spk = s.speakers ? s.speakers.split('|')[0].trim() + (s.speakers.includes('|') ? ' +' : '') : '';
+    card.innerHTML =
+      (isFeatured ? `<div class="badge-featured">⭐</div>` : '') +
+      `<div class="c-time">${fmt(s.start)} – ${fmt(s.end)}</div>` +
+      `<div class="c-title">${s.title}</div>` +
+      (spk ? `<div class="c-spk">${spk}</div>` : '');
+    card.onclick = () => openModal(s, st);
+    col.appendChild(card);
+  });
+
+  tl.appendChild(col);
+}
+
+function openModal(s, idx){
+  const spk = s.speakers ? s.speakers.split('|').map(x=>x.trim()).join('<br>') : '';
+  document.getElementById('modal-inner').innerHTML =
+    `<div class="m-stage">${stageNames[idx]}</div>` +
+    `<h3>${s.title}</h3>` +
+    `<div class="m-time">${fmt(s.start)} – ${fmt(s.end)}</div>` +
+    `<div class="m-desc">${s.desc}</div>` +
+    (spk ? `<div class="m-spk"><strong>Speakers:</strong><br>${spk}</div>` : '');
+  document.getElementById('modal-bg').classList.add('open');
+}
+function closeModal(){ document.getElementById('modal-bg').classList.remove('open'); }
+</script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
